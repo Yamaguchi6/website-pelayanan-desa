@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pelayanan Digital Desa</title>
+    <style>
+        /* Reset & Gaya Dasar */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f7f6; color: #333; line-height: 1.6; }
+
+        /* Header & Navigasi */
+        header { background-color: #1b4332; color: white; padding: 20px 0; text-align: center; }
+        header h1 { font-size: 26px; margin-bottom: 5px; }
+        header p { font-size: 14px; color: #d8f3dc; }
+
+        nav { background-color: #2d6a4f; padding: 12px; text-align: center; position: sticky; top: 0; z-index: 100; }
+        nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 15px; }
+        nav a:hover { color: #b7e4c7; }
+
+        /* Kontainer Utama */
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .section-title { color: #1b4332; margin-bottom: 20px; border-bottom: 2px solid #52b788; padding-bottom: 8px; }
+
+        /* Grid Layanan */
+        .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .service-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-top: 4px solid #40916c; }
+        .service-card h3 { color: #1b4332; margin-bottom: 10px; font-size: 18px; }
+        .service-card p { font-size: 14px; color: #555; }
+
+        /* Formulir Pengajuan & Cek Status */
+        .card-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 40px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;
+        }
+        .btn { background-color: #2d6a4f; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; }
+        .btn:hover { background-color: #1b4332; }
+
+        /* Tabel Status Pengajuan */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
+        th { background-color: #e9f5db; color: #1b4332; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge.proses { background-color: #fff3cd; color: #856404; }
+        .badge.selesai { background-color: #d4edda; color: #155724; }
+
+        /* Footer */
+        footer { background-color: #1b4332; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sistem Pelayanan Administrasi Desa</h1>
+        <p>Melayani Masyarakat dengan Cepat, Transparan, dan Mudah</p>
+    </header>
+
+    <nav>
+        <a href="#layanan">Jenis Layanan</a>
+        <a href="#pengajuan">Ajukan Surat</a>
+        <a href="#cek-status">Cek Status Surat</a>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Bagian Jenis Layanan -->
+        <h2 id="layanan" class="section-title">Jenis Layanan Administrasi</h2>
+        <div class="service-grid">
+            <div class="service-card">
+                <h3>Surat Pengantar KTP/KK</h3>
+                <p>Pembuatan surat pengantar untuk pengurusan dokumen kependudukan di tingkat kecamatan/dukcapil.</p>
+            </div>
+            <div class="service-card">
+                <h3>Surat Keterangan Domisili</h3>
+                <p>Keterangan tempat tinggal resmi bagi warga pendatang maupun keperluan administrasi lainnya.</p>
+            </div>
+            <div class="service-card">
+                <h3>Surat Keterangan Usaha (SKU)</h3>
+                <p>Legalitas usaha mikro/kecil warga desa untuk keperluan pengajuan permodalan atau perizinan.</p>
+            </div>
+            <div class="service-card">
+                <h3>Surat Keterangan Tidak Mampu</h3>
+                <p>Surat pengantar untuk keperluan beasiswa pendidikan, keringanan biaya kesehatan, dan bantuan sosial.</p>
+            </div>
+        </div>
+
+        <!-- Bagian Formulir Pengajuan Online -->
+        <h2 id="pengajuan" class="section-title">Formulir Pengajuan Surat Online</h2>
+        <div class="card-box">
+            <form id="formPengajuan" onsubmit="ajukanSurat(event)">
+                <div class="form-group">
+                    <label for="nik">Nomor Induk Kependudukan (NIK):</label>
+                    <input type="text" id="nik" maxlength="16" placeholder="Masukkan 16 digit NIK" required>
+                </div>
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap (Sesuai KTP):</label>
+                    <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label for="jenisSurat">Jenis Surat yang Diajukan:</label>
+                    <select id="jenisSurat" required>
+                        <option value="">-- Pilih Jenis Layanan --</option>
+                        <option value="Surat Pengantar KTP/KK">Surat Pengantar KTP/KK</option>
+                        <option value="Surat Keterangan Domisili">Surat Keterangan Domisili</option>
+                        <option value="Surat Keterangan Usaha (SKU)">Surat Keterangan Usaha (SKU)</option>
+                        <option value="Surat Keterangan Tidak Mampu">Surat Keterangan Tidak Mampu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="keperluan">Keterangan / Keperluan:</label>
+                    <textarea id="keperluan" rows="3" placeholder="Jelaskan keperluan pembuatan surat..." required></textarea>
+                </div>
+                <button type="submit" class="btn">Kirim Pengajuan</button>
+            </form>
+        </div>
+
+        <!-- Bagian Cek Status Pengajuan -->
+        <h2 id="cek-status" class="section-title">Pantau Status Pengajuan Surat</h2>
+        <div class="card-box">
+            <div class="form-group">
+                <input type="text" id="searchNik" placeholder="Cari berdasarkan NIK atau Nama Pemohon..." onkeyup="filterStatus()">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No. Tiket</th>
+                        <th>NIK</th>
+                        <th>Nama Pemohon</th>
+                        <th>Jenis Surat</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelStatus">
+                    <!-- Data diisi otomatis oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Pemerintah Desa Digital. Jam Operasional Balai Desa: Senin - Jumat (08.00 - 15.00 WIB)</p>
+    </footer>
+
+    <script>
+        // Data simulasi pengajuan warga
+        let dataPengajuan = [
+            { tiket: "DS-001", nik: "3301011234560001", nama: "Budi Santoso", surat: "Surat Keterangan Usaha (SKU)", status: "Selesai" },
+            { tiket: "DS-002", nik: "3301016543210002", nama: "Siti Aminah", surat: "Surat Keterangan Domisili", status: "Diproses" }
+        ];
+
+        // Menampilkan data ke tabel
+        function renderTabel(data) {
+            const tbody = document.getElementById("tabelStatus");
+            tbody.innerHTML = "";
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Data pengajuan tidak ditemukan.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const badgeClass = item.status === "Selesai" ? "selesai" : "proses";
+                const row = `
+                    <tr>
+                        <td><strong>${item.tiket}</strong></td>
+                        <td>${item.nik}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.surat}</td>
+                        <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Menangani pengiriman form baru
+        function ajukanSurat(event) {
+            event.preventDefault();
+
+            const nik = document.getElementById("nik").value;
+            const nama = document.getElementById("nama").value;
+            const surat = document.getElementById("jenisSurat").value;
+            const nomorTiket = "DS-00" + (dataPengajuan.length + 1);
+
+            // Tambahkan data baru ke array
+            dataPengajuan.unshift({
+                tiket: nomorTiket,
+                nik: nik,
+                nama: nama,
+                surat: surat,
+                status: "Diproses"
+            });
+
+            // Perbarui tabel dan reset form
+            renderTabel(dataPengajuan);
+            document.getElementById("formPengajuan").reset();
+
+            alert(`Pengajuan berhasil dikirim!\nNomor Tiket Anda: ${nomorTiket}\nSilakan pantau statusnya di tabel bawah.`);
+        }
+
+        // Fitur pencarian status berdasarkan NIK atau Nama
+        function filterStatus() {
+            const query = document.getElementById("searchNik").value.toLowerCase();
+            const hasil = dataPengajuan.filter(item => 
+                item.nik.includes(query) || item.nama.toLowerCase().includes(query)
+            );
+            renderTabel(hasil);
+        }
+
+        // Render data awal saat halaman dimuat
+        renderTabel(dataPengajuan);
+    </script>
+</body>
+</html>
